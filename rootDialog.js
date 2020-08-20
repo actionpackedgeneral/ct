@@ -70,7 +70,7 @@ PrinterIssuesChoiceArray = [
   "Deleting Stuck Print Jobs",
   "Software vs. Document/File Problems",
 ];
-hardwares = [
+hardwaresChoiceArray = [
   "Laptop",
   "Keyboard",
   "Mouse",
@@ -170,13 +170,12 @@ class RootDialog extends ComponentDialog {
           });
         },
         async (step) => {
-          console.log(step);
           switch (step.result.value) {
             case "Troubleshoot my issues":
               return await step.beginDialog("TroubleshootMenuWaterfallDialog");
               break;
             case "Hardwares":
-              return await step.beginDialog("HardwaresMenu");
+              return await step.beginDialog("HardwaresWaterfallDialog");
               break;
             case "System Upgrade":
               return await step.beginDialog("SystemUpgradeMenu");
@@ -200,7 +199,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("TroubleshootMenuWaterfallDialog", [
         async (step) => {
-          console.log(step.result);
           return await step.prompt("TroubleshootIssuesChoicePrompt", {
             choices: ChoiceFactory.toChoices(TroubleshootIssuesChoiceArray),
             style: ListStyle.heroCard,
@@ -231,30 +229,45 @@ class RootDialog extends ComponentDialog {
     );
     this.addDialog(new ChoicePrompt("systemIssuesChoicePrompt"));
     this.addDialog(
-      new WaterfallDialog("SystemIssuesWaterfallDailog", [
+      new WaterfallDialog("SystemIssuesWaterfallDialog", [
         async (step) => {
           return await step.prompt("systemIssuesChoicePrompt", {
-            choices: ChoicesFactory.toChoices(systemissuesChoiceArray),
+            choices: ChoiceFactory.toChoices(systemissuesChoiceArray),
             style: ListStyle.heroCard,
           });
         },
         async (step) => {
           switch (step.result.value) {
             case "No Display":
+              await step.context.sendActivity("path completed");
               break;
             case "Unable to login":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Adapter issues":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Battery issues":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Software not working correctly":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Program not responding":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Frequent start":
+              await step.context.sendActivity("path completed");
+
               break;
             case "Not powering on":
+              await step.context.sendActivity("path completed");
+
               break;
           }
           return step.cancelAllDialogs(true);
@@ -263,10 +276,10 @@ class RootDialog extends ComponentDialog {
     );
     this.addDialog(new ChoicePrompt("InternetIssuesChoicePrompt"));
     this.addDialog(
-      new WaterfallDialog("InternetIssuesWaterfallDailog", [
+      new WaterfallDialog("InternetIssuesWaterfallDialog", [
         async (step) => {
           return await step.prompt("InternetIssuesChoicePrompt", {
-            choices: ChoicesFactory.toChoices(InternetIssuesChoiceArray),
+            choices: ChoiceFactory.toChoices(InternetIssuesChoiceArray),
             style: ListStyle.heroCard,
           });
         },
@@ -291,7 +304,7 @@ class RootDialog extends ComponentDialog {
       new WaterfallDialog("SoftwareIssuesWaterfallDialog", [
         async (step) => {
           return await step.prompt("SoftwareIssuesChoicePrompt", {
-            choices: ChoiceFactory.ChoicePrompt(softwareIssuesChoiceArray),
+            choices: ChoiceFactory.toChoices(softwareIssuesChoiceArray),
             style: ListStyle.heroCard,
           });
         },
@@ -308,12 +321,12 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
-    this.addDialog(new ChoicePrompt(PrinterIssuesChoicePrompt));
+    this.addDialog(new ChoicePrompt("PrinterIssuesChoicePrompt"));
     this.addDialog(
       new WaterfallDialog("PrinterIssuesWaterfallDialog", [
         async (step) => {
           return await step.prompt("PrinterIssuesChoicePrompt", {
-            choices: ChoiceFactory.ChoicePrompt(softwareIssuesChoiceArray),
+            choices: ChoiceFactory.toChoices(PrinterIssuesChoiceArray),
             style: ListStyle.heroCard,
           });
         },
@@ -370,10 +383,8 @@ class RootDialog extends ComponentDialog {
         async (step) => {
           switch (step.result.value) {
             case "Request Leave":
-              // console.log(186);
               break;
             case "Leave Balance":
-              // console.log(189);
               break;
             case "Leave Application Status":
               break;
@@ -387,7 +398,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("PayrollWaterfall", [
         async (step) => {
-          console.log("Payroll Waterfall");
           return await step.prompt("PayrollMenu", {
             choices: ChoiceFactory.toChoices(payrollMenu),
             style: ListStyle.heroCard,
@@ -415,7 +425,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("RecruitmentWaterfall", [
         async (step) => {
-          // console.log("Payroll Waterfall");
           return await step.prompt("recruitmentMainMenu", {
             choices: ChoiceFactory.toChoices(recruitment),
             style: ListStyle.heroCard,
@@ -436,7 +445,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("LDWaterfall", [
         async (step) => {
-          // console.log("Payroll Waterfall");
           return await step.prompt("LDMainMenu", {
             choices: ChoiceFactory.toChoices([
               "My Portfolio",
@@ -473,7 +481,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("CalendarWaterfall", [
         async (step) => {
-          // console.log("Payroll Waterfall");
           await step.context.sendActivity("CALENDAR");
           return await step.cancelAllDialogs(true);
         },
@@ -482,7 +489,6 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("PerformanceWaterfall", [
         async (step) => {
-          // console.log("Payroll Waterfall");
           await step.context.sendActivity("READ Policy");
           return step.cancelAllDialogs(true);
         },
@@ -499,13 +505,10 @@ class RootDialog extends ComponentDialog {
     const dialogContext = await dialogSet.createContext(context);
     const results = await dialogContext.continueDialog();
     if (results.status === DialogTurnStatus.empty) {
-      console.log(`async run(context, accessor)`);
       await dialogContext.beginDialog(this.id);
     }
   }
   async mainMenuStep(step) {
-    // console.log("  async mainMenu(step)");
-    // await step.context.sendActivity("ehy");
     return await step.prompt("mainMenu", {
       choices: ChoiceFactory.toChoices(MainMenu),
       style: ListStyle.heroCard,
@@ -530,11 +533,9 @@ class RootDialog extends ComponentDialog {
   async HRMenuHandler(step) {
     switch (step.result.value) {
       case "Leave Management":
-        // console.log(238);
         return await step.beginDialog("LeaveManagementWaterfall");
         break;
       case "Payroll":
-        console.log(267);
         return await step.beginDialog("PayrollWaterfall");
       case "Recruitment":
         return await step.beginDialog("RecruitmentWaterfall");
