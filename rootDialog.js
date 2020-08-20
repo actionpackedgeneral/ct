@@ -122,6 +122,13 @@ recruitment = ["Refer", "IJP"];
 referMenu = ["Refer a candidate", "Referral Policy"];
 adminMenu = ["Stationary", "Furniture", "Electronics", "Check Request Status"];
 salesMenu = ["Target", "Achieved", "Create Opportunity"];
+TroubleshootIssuesChoiceArray = [
+  "System issues",
+  "Software issues",
+  "Internet issues",
+  "Printer issues",
+  "Other",
+];
 class RootDialog extends ComponentDialog {
   /**
    * @param {ConversationSate}
@@ -136,7 +143,7 @@ class RootDialog extends ComponentDialog {
     // const mm = new ChoicePrompt("mainMenu");
     this.addDialog(new ChoicePrompt("mainMenu"));
     this.addDialog(new ChoicePrompt("HRMM"));
-    this.addDialog(new ChoicePrompt("ITMainMenu"));
+    this.addDialog(new ChoicePrompt("ITMenu"));
     this.addDialog(new ChoicePrompt("SalesMainMenu"));
     this.addDialog(new ChoicePrompt("AdminMainMenu"));
     this.addDialog(new ChoicePrompt("LeaveMenu"));
@@ -157,25 +164,31 @@ class RootDialog extends ComponentDialog {
     this.addDialog(
       new WaterfallDialog("ITMainMenu", [
         async (step) => {
-          return await step.prompt("ITMainMenu", {
-            choices: ChoiceFactory.toChoices([ITmenu]),
+          return await step.prompt("ITMenu", {
+            choices: ChoiceFactory.toChoices(ITmenu),
             style: ListStyle.heroCard,
           });
         },
         async (step) => {
+          console.log(step);
           switch (step.result.value) {
             case "Troubleshoot my issues":
-              this.beginDialog("TroubleshootMenu");
+              return await step.beginDialog("TroubleshootMenuWaterfallDialog");
               break;
             case "Hardwares":
+              return await step.beginDialog("HardwaresMenu");
               break;
             case "System Upgrade":
+              return await step.beginDialog("SystemUpgradeMenu");
               break;
             case "Softwares":
+              return await step.beginDialog("SoftwaresMenu");
               break;
             case "Reset password":
+              return await step.beginDialog("ResetPasswordMenu");
               break;
             case "Raise an issue":
+              return await step.beginDialog("RaiseIssueMenu");
               break;
           }
           return await step.cancelAllDialogs(true);
@@ -183,6 +196,38 @@ class RootDialog extends ComponentDialog {
       ])
     );
 
+    this.addDialog(new ChoicePrompt("TroubleshootIssuesChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("TroubleshootMenuWaterfallDialog", [
+        async (step) => {
+          console.log(step.result);
+          return await step.prompt("TroubleshootIssuesChoicePrompt", {
+            choices: ChoiceFactory.toChoices(TroubleshootIssuesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "System issues":
+              return await step.beginDialog("SystemIssuesWaterfallDialog");
+              break;
+            case "Software issues":
+              this.beginDialog("SoftwareIssuesWaterfallDialog");
+              break;
+            case "Internet issues":
+              this.beginDialog("InternetIssuesWaterfallDialog");
+              break;
+            case "Printer issues":
+              this.beginDialog("PrinterIssuesWaterfallDialog");
+              break;
+            case "Other":
+              this.beginDialog("OtherActivityWaterfallDialog");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
     this.addDialog(
       new WaterfallDialog("SalesMainMenu", [
         this.HRMenuStep.bind(this),
@@ -269,35 +314,6 @@ class RootDialog extends ComponentDialog {
       ])
     );
     this.addDialog(new ChoicePrompt("LDMainMenu"));
-    this.addDialog(
-      new WaterfallDialog("LDWaterfall", [
-        async (step) => {
-          // console.log("Payroll Waterfall");
-          return await step.prompt("LDMainMenu", {
-            choices: ChoiceFactory.toChoices([
-              "My Portfolio",
-              "Training Courses",
-              "Add Certificates",
-              "Add Skills",
-            ]),
-            style: ListStyle.heroCard,
-          });
-        },
-        async (step) => {
-          switch (step.result.value) {
-            case "My Portfolio":
-              break;
-            case "Training Courses":
-              break;
-            case "Add Certificates":
-              break;
-            case "Add Skills":
-              break;
-          }
-          return await step.cancelAllDialogs(true);
-        },
-      ])
-    );
     this.addDialog(
       new WaterfallDialog("LDWaterfall", [
         async (step) => {
