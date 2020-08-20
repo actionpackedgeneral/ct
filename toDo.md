@@ -23,3 +23,4 @@ Control flow up through IT Menu / TroubleShoot my issues
 - Implement Rich Cards for the Menu itself
 - Implement Hardwares Card
 - Details for Available and Customizable Laptops
+- Keybaord Fancy Card

@@ -509,10 +509,10 @@ class RootDialog extends ComponentDialog {
               return await step.beginDialog("LaptopWaterfallDialog");
               break;
             case "Keyboard":
-              return await step.beginDialog("KeyboardWaterfallDialog");
+              await step.context.sendActivity("fancy CARD");
               break;
             case "Mouse":
-              return await step.beginDialog("MouseWaterfallDialog");
+              await step.context.sendActivity("fancy CARD");
               break;
             case "Monitor":
               await step.context.sendActivity("response recorded");
@@ -543,6 +543,26 @@ class RootDialog extends ComponentDialog {
               break;
           }
           return step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("LaptopChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("LaptopWaterfallDialog", [
+        async (step) => {
+          return await step.prompt("LaptopChoicePrompt", {
+            choices: ChoiceFactory.toChoices(LaptopChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Available Laptops":
+              break;
+            case "Customizable Laptops":
+              break;
+          }
+          return await step.cancelAllDialogs(true);
         },
       ])
     );
