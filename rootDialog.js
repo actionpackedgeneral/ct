@@ -59,9 +59,9 @@ systemissuesChoiceArray = [
   "Frequent Start",
   "Not powering on",
 ];
-softwareIssues = ["Office not working", "Unable to access Office"];
-internetIssues = ["No Internet", "Slow Internet", "Limited Access"];
-printerIssues = [
+softwareIssuesChoiceArray = ["Office not working", "Unable to access Office"];
+InternetIssuesChoiceArray = ["No Internet", "Slow Internet", "Limited Access"];
+PrinterIssuesChoiceArray = [
   "Offline",
   "Paper jam",
   "Processing job",
@@ -221,7 +221,8 @@ class RootDialog extends ComponentDialog {
               return await step.beginDialog("PrinterIssuesWaterfallDialog");
               break;
             case "Other":
-              return await step.beginDialog("OtherActivityWaterfallDialog");
+              await step.context.sendActivity("Path Completed");
+
               break;
           }
           return await step.cancelAllDialogs(true);
@@ -260,7 +261,92 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
-    
+    this.addDialog(new ChoicePrompt("InternetIssuesChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("InternetIssuesWaterfallDailog", [
+        async (step) => {
+          return await step.prompt("InternetIssuesChoicePrompt", {
+            choices: ChoicesFactory.toChoices(InternetIssuesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "No Internet":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Slow Internet":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Limited Access":
+              await step.context.sendActivity("Path Completed");
+              break;
+          }
+          return step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("SoftwareIssuesChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("SoftwareIssuesWaterfallDialog", [
+        async (step) => {
+          return await step.prompt("SoftwareIssuesChoicePrompt", {
+            choices: ChoiceFactory.ChoicePrompt(softwareIssuesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Office not working":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Unable to access Office":
+              await step.context.sendActivity("Path Completed");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt(PrinterIssuesChoicePrompt));
+    this.addDialog(
+      new WaterfallDialog("PrinterIssuesWaterfallDialog", [
+        async (step) => {
+          return await step.prompt("PrinterIssuesChoicePrompt", {
+            choices: ChoiceFactory.ChoicePrompt(softwareIssuesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Offline":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Paper jam":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Processing job":
+              await step.context.sendActivity("Path Completed");
+              break;
+
+            case "IO Error":
+              await step.context.sendActivity("Path Completed");
+              break;
+
+            case "Flashing Lights":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Deleting Stuck Print Jobs":
+              await step.context.sendActivity("Path Completed");
+              break;
+            case "Software vs. Document/File Problems":
+              await step.context.sendActivity("Path Completed");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
     this.addDialog(
       new WaterfallDialog("SalesMainMenu", [
         this.HRMenuStep.bind(this),
