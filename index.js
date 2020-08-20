@@ -14,8 +14,9 @@ const {
 } = require("botbuilder");
 
 // Import our custom bot class that provides a turn handling function.
-const { DialogBot } = require("./bots/dialogBot");
-const { UserProfileDialog } = require("./dialogs/userProfileDialog");
+const { RootDialog } = require("./rootDialog");
+const { DialogBot } = require("./bot");
+// const { UserProfileDialog } = require("./dialogs/userProfileDialog");
 
 // Read environment variables from .env file
 const ENV_FILE = path.join(__dirname, ".env");
@@ -31,7 +32,8 @@ const adapter = new BotFrameworkAdapter({
 adapter.onTurnError = async (context, error) => {
   // This check writes out errors to console log .vs. app insights.
   // NOTE: In production environment, you should consider logging this to Azure
-  //       application insights.
+  //       application insights. See https://aka.ms/bottelemetry for telemetry
+  //       configuration instructions.
   console.error(`\n [onTurnError] unhandled error: ${error}`);
 
   // Send a trace activity, which will be displayed in Bot Framework Emulator
@@ -61,7 +63,8 @@ const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
 // Create the main dialog.
-const dialog = new UserProfileDialog();
+// const dialog = new UserProfile(userState);
+const dialog = new RootDialog(userState);
 const bot = new DialogBot(conversationState, userState, dialog);
 
 // Create HTTP server.

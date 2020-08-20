@@ -108,6 +108,7 @@ class UserProfileDialog extends ComponentDialog {
         ],
       }
     );
+    console.log(111);
     this.addDialog(userProfileAdaptiveDialog);
     this.initialDialogId = ROOT_DIALOG;
   }
