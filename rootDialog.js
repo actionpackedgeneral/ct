@@ -42,14 +42,14 @@ intro =
 employeeIDPrompt =
   "Please enter your employee ID.(Note: Employee number must be in numeric like 6004211)";
 ITmenu = [
-  "Troubleshoot my Issues",
+  "Troubleshoot my issues",
   "Hardwares",
   "System upgrade",
   "Softwares",
   "Reset password",
   "Raise an issue",
 ];
-systemissues = [
+systemissuesChoiceArray = [
   "No Display",
   "Unable to login",
   "Adapter issues",
@@ -212,22 +212,55 @@ class RootDialog extends ComponentDialog {
               return await step.beginDialog("SystemIssuesWaterfallDialog");
               break;
             case "Software issues":
-              this.beginDialog("SoftwareIssuesWaterfallDialog");
+              return await step.beginDialog("SoftwareIssuesWaterfallDialog");
               break;
             case "Internet issues":
-              this.beginDialog("InternetIssuesWaterfallDialog");
+              return await step.beginDialog("InternetIssuesWaterfallDialog");
               break;
             case "Printer issues":
-              this.beginDialog("PrinterIssuesWaterfallDialog");
+              return await step.beginDialog("PrinterIssuesWaterfallDialog");
               break;
             case "Other":
-              this.beginDialog("OtherActivityWaterfallDialog");
+              return await step.beginDialog("OtherActivityWaterfallDialog");
               break;
           }
           return await step.cancelAllDialogs(true);
         },
       ])
     );
+    this.addDialog(new ChoicePrompt("systemIssuesChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("SystemIssuesWaterfallDailog", [
+        async (step) => {
+          return await step.prompt("systemIssuesChoicePrompt", {
+            choices: ChoicesFactory.toChoices(systemissuesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "No Display":
+              break;
+            case "Unable to login":
+              break;
+            case "Adapter issues":
+              break;
+            case "Battery issues":
+              break;
+            case "Software not working correctly":
+              break;
+            case "Program not responding":
+              break;
+            case "Frequent start":
+              break;
+            case "Not powering on":
+              break;
+          }
+          return step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    
     this.addDialog(
       new WaterfallDialog("SalesMainMenu", [
         this.HRMenuStep.bind(this),
@@ -411,7 +444,7 @@ class RootDialog extends ComponentDialog {
   async HRMenuHandler(step) {
     switch (step.result.value) {
       case "Leave Management":
-        console.log(238);
+        // console.log(238);
         return await step.beginDialog("LeaveManagementWaterfall");
         break;
       case "Payroll":
