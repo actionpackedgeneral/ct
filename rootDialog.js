@@ -70,7 +70,7 @@ PrinterIssuesChoiceArray = [
   "Deleting Stuck Print Jobs",
   "Software vs. Document/File Problems",
 ];
-hardwaresChoiceArray = [
+HardwaresChoiceArray = [
   "Laptop",
   "Keyboard",
   "Mouse",
@@ -82,7 +82,7 @@ hardwaresChoiceArray = [
   "LAN Cable", //confirm
   "LAN Splitter", //confirm
 ];
-hardwaresLaptops = ["Customized Laptops", "Available Laptops"];
+LaptopChoiceArray = ["Customized Laptops", "Available Laptops"];
 //monitor confirm
 //webcam confirm
 //headphone confirm
@@ -491,6 +491,78 @@ class RootDialog extends ComponentDialog {
         async (step) => {
           await step.context.sendActivity("READ Policy");
           return step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("HardwaresChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("HardwaresWaterfallDialog", [
+        async (step) => {
+          return await step.prompt("HardwaresChoicePrompt", {
+            choices: ChoiceFactory.toChoices(HardwaresChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Laptop":
+              return await step.beginDialog("LaptopWaterfallDialog");
+              break;
+            case "Keyboard":
+              return await step.beginDialog("KeyboardWaterfallDialog");
+              break;
+            case "Mouse":
+              return await step.beginDialog("MouseWaterfallDialog");
+              break;
+            case "Monitor":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "Webcam":
+              await step.context.sendActivity("response recorded");
+
+              break;
+            case "Headphone":
+              await step.context.sendActivity("response recorded");
+
+              break;
+            case "Mic":
+              await step.context.sendActivity("response recorded");
+
+              break;
+            case "HDMI":
+              await step.context.sendActivity("response recorded");
+
+              break;
+            case "LAN Cable":
+              await step.context.sendActivity("response recorded");
+
+              break;
+            case "LAN Splitter":
+              await step.context.sendActivity("response recorded");
+
+              break;
+          }
+          return step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("LaptopChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("LaptopWaterfallDialog", [
+        async (step) => {
+          return await step.prompt("LaptopChoicePrompt", {
+            choices: ChoiceFactory.toChoices(LaptopChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Available Laptops":
+              break;
+            case "Customizable Laptops":
+              break;
+          }
+          return await step.cancelAllDialogs(true);
         },
       ])
     );
