@@ -128,8 +128,17 @@ payrollMenu = [
 ];
 recruitment = ["Refer", "IJP"];
 referMenu = ["Refer a candidate", "Referral Policy"];
-adminMenu = ["Stationary", "Furniture", "Electronics", "Check Request Status"];
-salesMenu = ["Target", "Achieved", "Create Opportunity"];
+AdminChoiceArray = [
+  "Stationary",
+  "Furniture",
+  "Electronics",
+  "Check Request Status",
+];
+
+StationaryChoiceArray = ["Notebook", "Pen", "Marker"];
+FurnitureChoiceArray = ["Chair", "Table", "Drawer"];
+ElectronicsChoiceArray = ["Air Conditioner", "Fan", "Bulb", "Tube Light"];
+SalesChoiceArray = ["Target", "Achieved", "Create Opportunity"];
 TroubleshootIssuesChoiceArray = [
   "System issues",
   "Software issues",
@@ -736,6 +745,137 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
+    this.addDialog(new ChoicePrompt("SalesChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("SalesWaterfallDialog", [
+        async (step) => {
+          return step.prompt("SalesChoicePrompt", {
+            choices: ChoiceFactory.toChoices(SalesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Target":
+              await step.context.sendActivity("BACKEND");
+              break;
+            case "Achieved":
+              await step.context.sendActivity("BACKEND");
+              break;
+            case "Create Opportunity":
+              await step.context.sendActivity("BACKEND");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("AdminChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("AdminWaterfallDialog", [
+        async (step) => {
+          return step.prompt("AdminChoicePrompt", {
+            choices: ChoiceFactory.toChoices(AdminChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Stationary":
+              await step.context.beginDialog("StationeryWaterfallDialog");
+              break;
+            case "Furniture":
+              await step.context.sendActivity("FurnitureWaterfallDialog");
+              break;
+            case "Electronics":
+              await step.context.sendActivity("ElectronicsWaterfallDialog");
+              break;
+            case "Check Request Status":
+              await step.context.sendActivity("BACKEND");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("StationeryChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("StationeryWaterfallDialog", [
+        async (step) => {
+          return step.prompt("StationeryChoicePrompt", {
+            choices: ChoiceFactory.toChoices(StationeryChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Notebook":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Pen":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Master":
+              await step.context.sendActivity("request recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("FurnitureChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("FurnitureWaterfallDialog", [
+        async (step) => {
+          return step.prompt("FurnitureChoicePrompt", {
+            choices: ChoiceFactory.toChoices(FurnitureChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Chair":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Table":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Drawer":
+              await step.context.sendActivity("request recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("ElectronicsChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("ElectronicsWaterfallDialog", [
+        async (step) => {
+          return step.prompt("ElectronicsChoicePrompt", {
+            choices: ChoiceFactory.toChoices(ElectronicsChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Air Conditioner":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Fan":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Bulb":
+              await step.context.sendActivity("request recorded");
+              break;
+            case "Tube Light":
+              await step.context.sendActivity("request recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
     this.addDialog(new ChoicePrompt("SoftwaresChoicePrompt"));
     this.addDialog(
       new WaterfallDialog("SoftwaresWaterfallDialog", [
@@ -830,6 +970,10 @@ class RootDialog extends ComponentDialog {
         return await step.beginDialog("HRMainMenu");
       case "IT Help Desk":
         return await step.beginDialog("ITMainMenu");
+      case "Sales":
+        return await step.beginDialog("SalesWaterfallDialog");
+      case "Admin":
+        return await step.beginDialog("AdminWaterfallDialog");
     }
   }
   async HRMenuStep(step) {
