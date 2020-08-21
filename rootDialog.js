@@ -87,8 +87,8 @@ LaptopChoiceArray = ["Customized Laptops", "Available Laptops"];
 //webcam confirm
 //headphone confirm
 //mic confirm
-systemUpgrades = ["RAM", "HDD/SSD", "Graphics", "Operating System"];
-systemUpgradesRAM = [
+SystemUpgradesChoiceArray = ["RAM", "HDD/SSD", "Graphics", "Operating System"];
+RAMChoiceArray = [
   "4GB DDR3",
   "8GB DDR3",
   "16GB DDR3",
@@ -98,11 +98,19 @@ systemUpgradesRAM = [
   "16GB DDR4",
   "32GB DDR4",
 ];
-systemUpgradesHDDSSD = ["1TB HDD", "2TB HDD", "256GB SSD", "512GB SSD"];
-systemUpgradesGraphics = ["1GB", "2GB", "4GB", "8GB"];
-systemUpgradesOS = ["Windows", "Linux"];
-Softwares = ["Windows", "Linux", "Antivirus", "Office", "Others"]; //confirm
-
+HDDSSDChoiceArray = ["1TB HDD", "2TB HDD", "256GB SSD", "512GB SSD"];
+GraphicsChoiceArray = ["1GB", "2GB", "4GB", "8GB"];
+OperatingSystemChoiceArray = ["Windows", "Linux"];
+SoftwaresChoiceArray = ["Windows", "Linux", "Antivirus", "Office", "Others"]; //confirm
+AntivirusChoiceArray = [
+  "Kaspersky",
+  "Norton",
+  "ESET",
+  "AVG",
+  "McAfee",
+  "BitDefender",
+  "Avast",
+];
 leaveManagementMenu = [
   "Request Leave",
   "Leave Balance",
@@ -178,16 +186,16 @@ class RootDialog extends ComponentDialog {
               return await step.beginDialog("HardwaresWaterfallDialog");
               break;
             case "System Upgrade":
-              return await step.beginDialog("SystemUpgradeMenu");
+              return await step.beginDialog("SystemUpgradeWaterfallDialog");
               break;
             case "Softwares":
               return await step.beginDialog("SoftwaresMenu");
               break;
             case "Reset password":
-              return await step.beginDialog("ResetPasswordMenu");
+              await step.context.sendActivity("Backend Access");
               break;
             case "Raise an issue":
-              return await step.beginDialog("RaiseIssueMenu");
+              await step.context.sendActivity("RAISE Query/Backend Access");
               break;
           }
           return await step.cancelAllDialogs(true);
@@ -586,7 +594,215 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
-
+    this.addDialog(new ChoicePrompt("SystemUpgradeChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("SystemUpgradeWaterfallDialog", [
+        async (step) => {
+          return step.prompt("SystemUpgradeChoicePrompt", {
+            choices: ChoiceFactory.toChoices(SystemUpgradesChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "RAM":
+              return await step.beginDialog("RAMWaterfallDialog");
+            case "HDD/SSD":
+              return await step.beginDialog("HDD/SSDWaterfallDialog");
+            case "Graphics":
+              return await step.beginDialog("GraphicsWaterfallDialog");
+            case "Operating system":
+              return await step.beginDialog("OperatingSystemWaterfallDialog");
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("RAMChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("RAMWaterfallDialog", [
+        async (step) => {
+          return step.prompt("RAMChoicePrompt", {
+            choices: ChoiceFactory.toChoices(RAMChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "4GB DDR3":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "8GB DDR3":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "16GB DDR3":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "32GB DDR3":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "4GB DDR4":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "8GB DDR4":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "16GB DDR4":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "32GB DDR4":
+              await step.context.sendActivity("response recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("HDD/SSDChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("HDD/SSDWaterfallDialog", [
+        async (step) => {
+          return step.prompt("HDD/SSDChoicePrompt", {
+            choices: ChoiceFactory.toChoices(HDDSSDChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "1TB HDD":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "2TB HDD":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "256GB SSD":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "512GB SSD":
+              await step.context.sendActivity("response recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("GraphicsChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("GraphicsWaterfallDialog", [
+        async (step) => {
+          return step.prompt("GraphicsChoicePrompt", {
+            choices: ChoiceFactory.toChoices(GraphicsChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "1GB":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "2GB":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "4GB":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "8GB":
+              await step.context.sendActivity("response recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("OperatingSystemChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("OperatingSystemWaterfallDialog", [
+        async (step) => {
+          return step.prompt("OperatingSystemChoicePrompt", {
+            choices: ChoiceFactory.toChoices(OperatingSystemChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Windows":
+              await step.context.sendActivity("Fancy Card");
+              break;
+            case "Linux":
+              await step.context.sendActivity("Fancy Card");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("SoftwaresChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("SoftwaresWaterfallDialog", [
+        async (step) => {
+          return step.prompt("SoftwaresChoicePrompt", {
+            choices: ChoiceFactory.toChoices(SoftwaresChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Windows":
+              await step.context.sendActivity("Fancy Card");
+              break;
+            case "Linux":
+              await step.context.sendActivity("Fancy Card");
+              break;
+            case "Antivirus":
+              return await step.context.beginDialog("AntivirusWaterfallDialog");
+            case "Office":
+              await step.context.sendActivity("Generic Help");
+              break;
+            case "Others":
+              await step.context.sendActivity("request recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(new ChoicePrompt("AntivirusChoicePrompt"));
+    this.addDialog(
+      new WaterfallDialog("AntivirusWaterfallDialog", [
+        async (step) => {
+          return step.prompt("AntivirusChoicePrompt", {
+            choices: ChoiceFactory.toChoice(AntivirusChoiceArray),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Kaspersky":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "Norton":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "ESET":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "AVG":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "McAfee":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "BitDefender":
+              await step.context.sendActivity("response recorded");
+              break;
+            case "Avast":
+              await step.context.sendActivity("response recorded");
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
     this.initialDialogId = "begin";
   }
 
