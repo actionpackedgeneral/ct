@@ -9,7 +9,6 @@ Akshay Gulabrao, what can I do for you? You can type 'help' any time or can type
 /*
 /* Here are some suggestions that you can try.*/
 // main menu
-
 const {
   ComponentDialog,
   DialogSet,
@@ -21,6 +20,8 @@ const {
   ChoiceFactory,
   ListStyle,
 } = require("botbuilder-dialogs");
+const introDialogSet = require("./introDialogSet");
+
 // const { UserProfile } = require("./userProfile");
 // const { TurnContext } = require("botbuilder");
 // const { HRDialogs } = require("./scripts/hrhelpdesk");
@@ -965,6 +966,7 @@ class RootDialog extends ComponentDialog {
 
   async mainMenuHandler(step) {
     let choice = step.result.value;
+    console.log(introDialogSet);
     switch (choice) {
       case "HR Help Desk":
         return await step.beginDialog("HRMainMenu");
