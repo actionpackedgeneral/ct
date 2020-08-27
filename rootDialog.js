@@ -21,6 +21,8 @@ const {
   ListStyle,
 } = require("botbuilder-dialogs");
 const introDialogSet = require("./introDialogSet");
+// var xhr = require("xmlhttprequest").XMLHttpRequest;
+global.XMLHttpRequest = require("xhr2");
 
 // const { UserProfile } = require("./userProfile");
 // const { TurnContext } = require("botbuilder");
@@ -36,6 +38,7 @@ const HRMenu = [
   "Survey",
   "Holiday Calendar",
   "Performance Management",
+  "Create a User",
 ];
 
 intro =
@@ -394,6 +397,29 @@ class RootDialog extends ComponentDialog {
       new WaterfallDialog("LeaveManagementWaterfall", [
         async (step) => {
           return await step.prompt("LeaveMenu", {
+            choices: ChoiceFactory.toChoices(leaveManagementMenu),
+            style: ListStyle.heroCard,
+          });
+        },
+        async (step) => {
+          switch (step.result.value) {
+            case "Request Leave":
+              break;
+            case "Leave Balance":
+              break;
+            case "Leave Application Status":
+              break;
+            case "Delete Leave Application":
+              break;
+          }
+          return await step.cancelAllDialogs(true);
+        },
+      ])
+    );
+    this.addDialog(
+      new WaterfallDialog("CreateUserWaterfall", [
+        async (step) => {
+          return await step.prompt("HRMenu", {
             choices: ChoiceFactory.toChoices(leaveManagementMenu),
             style: ListStyle.heroCard,
           });
@@ -966,7 +992,7 @@ class RootDialog extends ComponentDialog {
 
   async mainMenuHandler(step) {
     let choice = step.result.value;
-    console.log(introDialogSet);
+    // console.log(DialogSet.find("LeaveManagementWaterfall"));
     switch (choice) {
       case "HR Help Desk":
         return await step.beginDialog("HRMainMenu");
@@ -1001,6 +1027,24 @@ class RootDialog extends ComponentDialog {
         return await step.beginDialog("CalendarWaterfall");
       case "Performance Management":
         return await step.beginDialog("PerformanceWaterfall");
+      case "Create a User":
+        /*
+        https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole='Developer',MailId='rlamba@cognitus.one')
+        [Yesterday 12:44 AM] Rahul Lamba
+        username: rlamba
+        password: HSS123456
+        
+        */
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open(
+          "GET",
+          "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
+          false
+        );
+        xmlHttp.send(null);
+        console.log(xmlHttp.responseText);
+        break;
+      //make API Call Here
     }
   }
 }
