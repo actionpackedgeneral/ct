@@ -23,7 +23,9 @@ const {
 const introDialogSet = require("./introDialogSet");
 // var xhr = require("xmlhttprequest").XMLHttpRequest;
 global.XMLHttpRequest = require("xhr2");
-
+const a = require("./node_modules/btoa");
+var request = require("request");
+var https = require("https");
 // const { UserProfile } = require("./userProfile");
 // const { TurnContext } = require("botbuilder");
 // const { HRDialogs } = require("./scripts/hrhelpdesk");
@@ -1035,14 +1037,82 @@ class RootDialog extends ComponentDialog {
         password: HSS123456
         
         */
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open(
-          "GET",
-          "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
-          false
-        );
-        xmlHttp.send(null);
-        console.log(xmlHttp.responseText);
+        // var xmlHttp = new XMLHttpRequest();
+        // xmlHttp.open(
+        //   "GET",
+        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
+        //   false
+        // );
+        // xmlHttp.send(null);
+        //hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole='Developer',MailId='rlamba@cognitus.one')
+        // let xhr = new XMLHttpRequest();
+        // xhr.open(
+        //   "GET",
+        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
+        //   true
+        // );
+        // let data = "rlamba:HSS123456";
+        // let buff = new Buffer(data);
+        // let base64data = buff.toString("base64");
+        // xhr.setRequestHeader(
+        //   "Authorization",
+        //   "Basic" +
+        //     Buffer.from("cmxhbWJhOkhTUzEyMzQ1Ng==", "base64").toString("binary")
+        // );
+
+        // xhr.send(null);
+        // let url =
+        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)";
+        // let usr = "rlamba";
+        // let pas = "HSS123456";
+        // // let response = request.get(url).auth(usr, pas, true);
+        // // console.log(response.json());
+
+        // const xhr = new XMLHttpRequest();
+        // xhr.open("GET", url, [true, usr, pas]);
+        // xhr.withCredentials = true;
+        // xhr.responseType = JSON;
+        // xhr.send();
+
+        // xhr.onload = (e) => {
+        //   console.log(`${xhr.response}`);
+        // };
+        var request = require("request");
+        var options = {
+          method: "GET",
+          url:
+            "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
+          headers: {
+            Authorization: "Basic cmxhbWJhOkhTUzEyMzQ1Ng==",
+          },
+        };
+        request(options, function (error, response) {
+          if (error) throw new Error(error);
+          console.log(response.body);
+        });
+
+        // xhr.open("GET", url, [true, usr, pass]);
+
+        // xhr.withCredentials = true;
+        // // xhr.setRequestHeader(“Authorization”, auth);
+        // xhr.send();
+        // xhr.onload = function () {
+        //   console.log(`Loaded: ${xhr.status}`);
+        // };
+
+        // xhr.onerror = function () {
+        //   // only triggers if the request couldn't be made at all
+        //   console.log(`Network Error`);
+        // };
+
+        // xhr.onprogress = function (event) {
+        //   // triggers periodically
+        //   // event.loaded - how many bytes downloaded
+        //   // event.lengthComputable = true if the server sent Content-Length header
+        //   // event.total - total number of bytes (if lengthComputable)
+        //   console.log(`Received ${event.loaded} of ${event.total}`);
+        // };
+        console.log(1045);
         break;
       //make API Call Here
     }
