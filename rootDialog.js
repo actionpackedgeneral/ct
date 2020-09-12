@@ -20,9 +20,11 @@ const {
   ChoiceFactory,
   ListStyle,
 } = require("botbuilder-dialogs");
-const introDialogSet = require("./introDialogSet");
+
 // var xhr = require("xmlhttprequest").XMLHttpRequest;
-global.XMLHttpRequest = require("xhr2");
+// global.XMLHttpRequest = require("xhr2");
+const { UserProfileDialog } = require("./dialogs/userProfileDialog");
+const { LMDialog } = require("./LMDialog");
 const a = require("./node_modules/btoa");
 var request = require("request");
 var https = require("https");
@@ -117,13 +119,7 @@ AntivirusChoiceArray = [
   "BitDefender",
   "Avast",
 ];
-leaveManagementMenu = [
-  "Request Leave",
-  "Leave Balance",
-  "Leave Application Status",
-  "Delete Leave Application",
-  "cancel",
-];
+
 payrollMenu = [
   "Salary Slip",
   "Bonus",
@@ -393,52 +389,6 @@ class RootDialog extends ComponentDialog {
       new WaterfallDialog("AdminMainMenu", [
         this.HRMenuStep.bind(this),
         this.HRMenuHandler.bind(this),
-      ])
-    );
-    this.addDialog(
-      new WaterfallDialog("LeaveManagementWaterfall", [
-        async (step) => {
-          return await step.prompt("LeaveMenu", {
-            choices: ChoiceFactory.toChoices(leaveManagementMenu),
-            style: ListStyle.heroCard,
-          });
-        },
-        async (step) => {
-          switch (step.result.value) {
-            case "Request Leave":
-              break;
-            case "Leave Balance":
-              break;
-            case "Leave Application Status":
-              break;
-            case "Delete Leave Application":
-              break;
-          }
-          return await step.cancelAllDialogs(true);
-        },
-      ])
-    );
-    this.addDialog(
-      new WaterfallDialog("CreateUserWaterfall", [
-        async (step) => {
-          return await step.prompt("HRMenu", {
-            choices: ChoiceFactory.toChoices(leaveManagementMenu),
-            style: ListStyle.heroCard,
-          });
-        },
-        async (step) => {
-          switch (step.result.value) {
-            case "Request Leave":
-              break;
-            case "Leave Balance":
-              break;
-            case "Leave Application Status":
-              break;
-            case "Delete Leave Application":
-              break;
-          }
-          return await step.cancelAllDialogs(true);
-        },
       ])
     );
     this.addDialog(
@@ -935,6 +885,7 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
+    this.addDialog(new LMDialog("LM"));
     this.addDialog(new ChoicePrompt("AntivirusChoicePrompt"));
     this.addDialog(
       new WaterfallDialog("AntivirusWaterfallDialog", [
@@ -994,7 +945,6 @@ class RootDialog extends ComponentDialog {
 
   async mainMenuHandler(step) {
     let choice = step.result.value;
-    // console.log(DialogSet.find("LeaveManagementWaterfall"));
     switch (choice) {
       case "HR Help Desk":
         return await step.beginDialog("HRMainMenu");
@@ -1012,10 +962,18 @@ class RootDialog extends ComponentDialog {
       style: ListStyle.heroCard,
     });
   }
+  g(tagName, stringXML) {
+    var tagStart = "<d:" + tagName + ">";
+    var tagEnd = "</d:" + tagName + ">";
+    var startIndex = stringXML.indexOf(tagStart) + tagStart.length;
+    var startEndIndex = stringXML.indexOf(tagEnd, tagStart);
+    let result = stringXML.Substring(startIndex, startEndIndex - startIndex);
+    return result;
+  }
   async HRMenuHandler(step) {
     switch (step.result.value) {
       case "Leave Management":
-        return await step.beginDialog("LeaveManagementWaterfall");
+        return await step.beginDialog("LM");
         break;
       case "Payroll":
         return await step.beginDialog("PayrollWaterfall");
@@ -1027,96 +985,34 @@ class RootDialog extends ComponentDialog {
         return await step.beginDialog("SurveyWaterfall");
       case "Holiday Calendar":
         return await step.beginDialog("CalendarWaterfall");
+
       case "Performance Management":
         return await step.beginDialog("PerformanceWaterfall");
       case "Create a User":
-        /*
-        https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole='Developer',MailId='rlamba@cognitus.one')
-        [Yesterday 12:44 AM] Rahul Lamba
-        username: rlamba
-        password: HSS123456
-        
-        */
-        // var xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open(
-        //   "GET",
-        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
-        //   false
-        // );
-        // xmlHttp.send(null);
-        //hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole='Developer',MailId='rlamba@cognitus.one')
-        // let xhr = new XMLHttpRequest();
-        // xhr.open(
-        //   "GET",
-        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
-        //   true
-        // );
-        // let data = "rlamba:HSS123456";
-        // let buff = new Buffer(data);
-        // let base64data = buff.toString("base64");
-        // xhr.setRequestHeader(
-        //   "Authorization",
-        //   "Basic" +
-        //     Buffer.from("cmxhbWJhOkhTUzEyMzQ1Ng==", "base64").toString("binary")
-        // );
+        return await step.beginDialog("");
+        var axios = require("axios");
 
-        // xhr.send(null);
-        // let url =
-        //   "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)";
-        // let usr = "rlamba";
-        // let pas = "HSS123456";
-        // // let response = request.get(url).auth(usr, pas, true);
-        // // console.log(response.json());
-
-        // const xhr = new XMLHttpRequest();
-        // xhr.open("GET", url, [true, usr, pas]);
-        // xhr.withCredentials = true;
-        // xhr.responseType = JSON;
-        // xhr.send();
-
-        // xhr.onload = (e) => {
-        //   console.log(`${xhr.response}`);
-        // };
-        var request = require("request");
-        var options = {
-          method: "GET",
+        var config = {
+          method: "get",
           url:
             "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
           headers: {
             Authorization: "Basic cmxhbWJhOkhTUzEyMzQ1Ng==",
           },
         };
-        request(options, function (error, response) {
-          if (error) throw new Error(error);
-          console.log(response.body);
-        });
 
-        // xhr.open("GET", url, [true, usr, pass]);
-
-        // xhr.withCredentials = true;
-        // // xhr.setRequestHeader(“Authorization”, auth);
-        // xhr.send();
-        // xhr.onload = function () {
-        //   console.log(`Loaded: ${xhr.status}`);
-        // };
-
-        // xhr.onerror = function () {
-        //   // only triggers if the request couldn't be made at all
-        //   console.log(`Network Error`);
-        // };
-
-        // xhr.onprogress = function (event) {
-        //   // triggers periodically
-        //   // event.loaded - how many bytes downloaded
-        //   // event.lengthComputable = true if the server sent Content-Length header
-        //   // event.total - total number of bytes (if lengthComputable)
-        //   console.log(`Received ${event.loaded} of ${event.total}`);
-        // };
-        console.log(1045);
-        break;
-      //make API Call Here
+        axios(config)
+          .then(function (response) {
+            // let a = JSON.parse(response.data);
+            // console.log(response.data);
+            console.log(JSON.stringify(response.data.d.UserExists));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
   }
 }
+//This javascript code looks strange...is it obfuscated???
 
 module.exports.RootDialog = RootDialog;
