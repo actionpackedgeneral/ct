@@ -24,7 +24,7 @@ const {
 // var xhr = require("xmlhttprequest").XMLHttpRequest;
 // global.XMLHttpRequest = require("xhr2");
 const { UserProfileDialog } = require("./dialogs/userProfileDialog");
-const { LMDialog } = require("./LMDialog");
+const { HRMenu } = require("./HRMenu");
 const a = require("./node_modules/btoa");
 var request = require("request");
 var https = require("https");
@@ -34,16 +34,6 @@ var https = require("https");
 // const { ITDialogs } = require("./scripts/ithelpdesk");
 // const { SalesDialogs } = require("./scripts/sales");
 const MainMenu = ["HR Help Desk", "IT Help Desk", "Sales", "Admin"];
-const HRMenu = [
-  "Leave Management",
-  "Payroll",
-  "Recruitment",
-  "L&D",
-  "Survey",
-  "Holiday Calendar",
-  "Performance Management",
-  "Create a User",
-];
 
 intro =
   "Hi, I am Ekaa your Enterprise Digital Assistant.I can help you with Sales, HR and IT related queries.You can type 'help' any time to get help or 'cancel' to cancel any conversation.";
@@ -172,12 +162,6 @@ class RootDialog extends ComponentDialog {
       new WaterfallDialog("begin", [
         this.mainMenuStep.bind(this),
         this.mainMenuHandler.bind(this),
-      ])
-    );
-    this.addDialog(
-      new WaterfallDialog("HRMainMenu", [
-        this.HRMenuStep.bind(this),
-        this.HRMenuHandler.bind(this),
       ])
     );
     this.addDialog(
@@ -377,18 +361,6 @@ class RootDialog extends ComponentDialog {
           }
           return await step.cancelAllDialogs(true);
         },
-      ])
-    );
-    this.addDialog(
-      new WaterfallDialog("SalesMainMenu", [
-        this.HRMenuStep.bind(this),
-        this.HRMenuHandler.bind(this),
-      ])
-    );
-    this.addDialog(
-      new WaterfallDialog("AdminMainMenu", [
-        this.HRMenuStep.bind(this),
-        this.HRMenuHandler.bind(this),
       ])
     );
     this.addDialog(
@@ -885,7 +857,7 @@ class RootDialog extends ComponentDialog {
         },
       ])
     );
-    this.addDialog(new LMDialog("LM"));
+    this.addDialog(new HRMenu("HR"));
     this.addDialog(new ChoicePrompt("AntivirusChoicePrompt"));
     this.addDialog(
       new WaterfallDialog("AntivirusWaterfallDialog", [
@@ -947,7 +919,7 @@ class RootDialog extends ComponentDialog {
     let choice = step.result.value;
     switch (choice) {
       case "HR Help Desk":
-        return await step.beginDialog("HRMainMenu");
+        return await step.beginDialog("HR");
       case "IT Help Desk":
         return await step.beginDialog("ITMainMenu");
       case "Sales":
@@ -962,57 +934,8 @@ class RootDialog extends ComponentDialog {
       style: ListStyle.heroCard,
     });
   }
-  g(tagName, stringXML) {
-    var tagStart = "<d:" + tagName + ">";
-    var tagEnd = "</d:" + tagName + ">";
-    var startIndex = stringXML.indexOf(tagStart) + tagStart.length;
-    var startEndIndex = stringXML.indexOf(tagEnd, tagStart);
-    let result = stringXML.Substring(startIndex, startEndIndex - startIndex);
-    return result;
-  }
-  async HRMenuHandler(step) {
-    switch (step.result.value) {
-      case "Leave Management":
-        return await step.beginDialog("LM");
-        break;
-      case "Payroll":
-        return await step.beginDialog("PayrollWaterfall");
-      case "Recruitment":
-        return await step.beginDialog("RecruitmentWaterfall");
-      case "L&D":
-        return await step.beginDialog("LDWaterfall");
-      case "Survey":
-        return await step.beginDialog("SurveyWaterfall");
-      case "Holiday Calendar":
-        return await step.beginDialog("CalendarWaterfall");
-
-      case "Performance Management":
-        return await step.beginDialog("PerformanceWaterfall");
-      case "Create a User":
-        return await step.beginDialog("");
-        var axios = require("axios");
-
-        var config = {
-          method: "get",
-          url:
-            "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27Developer%27,MailId=%27rlamba@cognitus.one%27)",
-          headers: {
-            Authorization: "Basic cmxhbWJhOkhTUzEyMzQ1Ng==",
-          },
-        };
-
-        axios(config)
-          .then(function (response) {
-            // let a = JSON.parse(response.data);
-            // console.log(response.data);
-            console.log(JSON.stringify(response.data.d.UserExists));
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-    }
-  }
 }
+
 //This javascript code looks strange...is it obfuscated???
 
 module.exports.RootDialog = RootDialog;
