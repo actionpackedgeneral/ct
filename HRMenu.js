@@ -9,6 +9,7 @@ const {
   ListStyle,
 } = require("botbuilder-dialogs");
 const { LMDialog } = require("./HRDialogs/LMDialog");
+const { CreateUserDialog } = require("./HRDialogs/CreateUserDialog.js");
 
 HRMenuChoiceArray = [
   "Leave Management",
@@ -25,6 +26,7 @@ class HRDialog extends ComponentDialog {
     super(dialogId);
     this.initialDialogId = "HRMenuHandler";
     this.addDialog(new LMDialog("LM"));
+    this.addDialog(new CreateUserDialog("CU"));
     this.addDialog(new ChoicePrompt("HRMenuChoicePrompt"));
     this.addDialog(
       new WaterfallDialog("HRMenuHandler", [
@@ -53,7 +55,7 @@ class HRDialog extends ComponentDialog {
             case "Performance Management":
               return await step.beginDialog("PerformanceWaterfall");
             case "Create a User":
-              return await step.beginDialog("");
+              return await step.beginDialog("CU");
               var axios = require("axios");
 
               var config = {

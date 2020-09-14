@@ -42,13 +42,7 @@ class CreateUserDialog extends ComponentDialog {
           arr[3] = step.result;
           let msg = `I have your mode of transport as ${arr[0]}`;
           msg += ".";
-          var axios = require("axios");
-          var btoa = require("btoa");
-          let URL = `https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole=%27${arr[2]}%27,MailId=%27${arr[3]}%27)`;
-          var config = {
-            method: "get",
-            url:
-              "https://hss.cognitusconsulting.com:5200/sap/opu/odata/sap/ZCHAT_BOTS_SRV/CreateUserIdSet(JobRole='Developer',MailId='rlamba@cognitus.one')",
+          var axios = require("axios");gMailId='rlamba@cognitus.one')",
             headers: {
               Authorization: "Basic " + btoa(`${arr[0]}:${arr[1]}`),
             },
