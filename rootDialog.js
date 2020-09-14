@@ -23,7 +23,6 @@ const {
 
 // var xhr = require("xmlhttprequest").XMLHttpRequest;
 // global.XMLHttpRequest = require("xhr2");
-const { UserProfileDialog } = require("./dialogs/userProfileDialog");
 const { HRMenu } = require("./HRMenu");
 const a = require("./node_modules/btoa");
 var request = require("request");
