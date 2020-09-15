@@ -117,7 +117,6 @@ payrollMenu = [
   "Gratuity",
   "Investment Details",
 ];
-recruitment = ["Refer", "IJP"];
 referMenu = ["Refer a candidate", "Referral Policy"];
 AdminChoiceArray = [
   "Stationary",

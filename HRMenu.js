@@ -1,6 +1,5 @@
 const {
   ComponentDialog,
-  DialogTurnStatus,
   NumberPrompt,
   ChoicePrompt,
   TextPrompt,
@@ -10,6 +9,7 @@ const {
 } = require("botbuilder-dialogs");
 const { LMDialog } = require("./HRDialogs/LMDialog");
 const { CreateUserDialog } = require("./HRDialogs/CreateUserDialog.js");
+const { PayrollDialog } = require("./HRDialogs/PayrollDialog");
 
 HRMenuChoiceArray = [
   "Leave Management",
@@ -26,6 +26,7 @@ class HRDialog extends ComponentDialog {
     super(dialogId);
     this.initialDialogId = "HRMenuHandler";
     this.addDialog(new LMDialog("LM"));
+    this.addDialog(new PayrollDialog("Pa"));
     this.addDialog(new CreateUserDialog("CU"));
     this.addDialog(new ChoicePrompt("HRMenuChoicePrompt"));
     this.addDialog(
@@ -42,7 +43,7 @@ class HRDialog extends ComponentDialog {
               return await step.beginDialog("LM");
               break;
             case "Payroll":
-              return await step.beginDialog("PayrollWaterfall");
+              return await step.beginDialog("Pa");
             case "Recruitment":
               return await step.beginDialog("RecruitmentWaterfall");
             case "L&D":
